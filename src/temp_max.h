@@ -3,4 +3,5 @@
 
 void setup_max();
 void loop_max();
+float get_temp_c();
 #endif

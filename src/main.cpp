@@ -7,6 +7,15 @@
 #include "server.h"
 #include "sensors.h"
 
+
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WebServer.h>
+
+#include <ElegantOTA.h>
+
+WebServer server_ota(85);
+
 int PERIOD_CHECK_CONNECTION  = 1 * 60 * 1000;
 unsigned long TIME_PERIOD_CHECK_CONNECTION = 0;
 
@@ -29,20 +38,28 @@ void setup() {
   set_logs();
   delay(1000);
   init_sensors();
-  // pinMode(LED_BUILTIN, OUTPUT);
-  // digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+
+  server_ota.on("/", []() {
+    server_ota.send(200, "text/plain", "Hi! I am ESP8266.");
+  });
+
+  ElegantOTA.begin(&server_ota);    // Start ElegantOTA
+  server_ota.begin();
+  Serial.println("HTTP server started");
 }
 
 void loop() {
+  server_ota.handleClient();
   if(millis() >= TIME_PERIOD_CHECK_CONNECTION + PERIOD_CHECK_CONNECTION) {
     TIME_PERIOD_CHECK_CONNECTION += PERIOD_CHECK_CONNECTION;
     check_wifi_connection();
   }
 
+  read_sensors();
+
   if(millis() >= TIME_PERIOD_CYCLE + PERIOD_CYCLE) {
     TIME_PERIOD_CYCLE += PERIOD_CYCLE;
-
-    read_sensors();
 
     if(is_internet() == true) {
       Serial.println("Internet");

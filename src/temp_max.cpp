@@ -7,6 +7,13 @@ const int MAX6675_SO_PIN = 37; // data out
 const int MAX6675_SCK_PIN = 36; // clock
 MAX6675 thermocouple(MAX6675_SCK_PIN, MAX6675_CS_PIN, MAX6675_SO_PIN);
 
+float temp_c = 0;
+float temp_f = 0;
+
+float get_temp_c() {
+  return temp_c;
+}
+
 void setup_max() {
   Serial.println("MAX6675 test");
   // wait for MAX chip to stabilize
@@ -15,9 +22,9 @@ void setup_max() {
 
 void loop_max() {
   // basic readout test, just print the current temp
-  
+  temp_c = thermocouple.readCelsius();
   Serial.print("C = "); 
-  Serial.println(thermocouple.readCelsius());
+  Serial.println(temp_c);
   Serial.print("F = ");
   Serial.println(thermocouple.readFahrenheit());
   

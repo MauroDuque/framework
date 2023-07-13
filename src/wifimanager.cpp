@@ -29,7 +29,8 @@ void wifi_connection() {
     WiFi.softAP(soft_ap_ssid, soft_ap_password);
     Serial.print("Access Point IP address: ");
     Serial.println(WiFi.softAPIP()); // Print the IP address of the Access Point
-  
+
+    
     WiFi.begin(get_SSID().c_str(), get_password().c_str());
 
     Serial.println("NetWork: ");
@@ -40,6 +41,9 @@ bool is_internet() {
     if (WiFi.status() != WL_CONNECTED) {
         return false;
     }
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+
     return true;
 }
 

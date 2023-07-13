@@ -12,6 +12,8 @@
 #include "GAS.h"
 #include "water_flow.h"
 #include "tmp_102.h"
+#include "temp_max.h"
+#include "c4to20mA.h"
 
 int version;
 
@@ -246,7 +248,7 @@ void data_send(String address, double value) {
   data_to_send["sensor"] = address;
   data_to_send["value"] = val;
   data_to_send["date"] = double(get_time_value()["timestamp"]);
-
+  Serial.println(JSON.stringify(data_to_send));
   // Send HTTP POST request
   int httpResponseCode = http.POST(JSON.stringify(data_to_send));
 
@@ -281,33 +283,38 @@ void post_sensors_values() {
   // delay(500);
   // data_send(get_mac() + "&0x67", getSensorTemperature(7));
   // delay(500);
-  data_send(get_mac() + "&0x80", get_pulse_gas());
-  Serial.print("Gas pulse: ");
-  Serial.print(get_pulse_gas());
-  delay(500);
-  data_send(get_mac() + "&0x81", get_counter_gas());
-  delay(500);
-  Serial.print(" Gas counter: ");
-  Serial.print(get_counter_gas());
-  // data_send(get_mac() + "&0x40", get_current_sensor(0));
+  // data_send(get_mac() + "&0x80", get_pulse_gas());
   // delay(500);
-  // data_send(get_mac() + "&0x41", get_current_sensor(1));
+  // data_send(get_mac() + "&0x81", get_counter_gas());
   // delay(500);
-  data_send(get_mac() + "&0x90", get_sensor_value_humidity());
-  Serial.print(" Humidity: ");
-  Serial.print(get_sensor_value_humidity());
-  delay(500);
-  data_send(get_mac() + "&0x91", get_sensor_value_temp());
-  Serial.print(" Temp: ");
-  Serial.println(get_sensor_value_temp());
-  delay(500);
+  // data_send(get_mac() + "&0x40", get_current_1() + 0.1);
+  // delay(500);
+  // data_send(get_mac() + "&0x41", get_current_2() + 0.1);
+  // delay(500);
+  // data_send(get_mac() + "&0x42", get_power_1() + 0.1);
+  // delay(500);
+  // data_send(get_mac() + "&0x43", get_power_2() + 0.1);
+  // delay(500);
+  // data_send(get_mac() + "&0x44", get_total_power() + 0.1);
+  // delay(500);
+  // data_send(get_mac() + "&0x90", get_sensor_value_humidity());
+  // delay(500);
+  // data_send(get_mac() + "&0x91", get_sensor_value_temp());
+  // delay(500);
   // data_send(get_mac() + "&0x10", get_liters_per_minute());
   // delay(500);
   // data_send(get_mac() + "&0x11", get_total_volume());
   // delay(500);
   // data_send(get_mac() + "&0x91", get_sensor_temp_102());
   // delay(500);
+
+  
+  // data_send(get_mac() + "&0x30", getCurrent() + 0.01);
+  // delay(500);
+
+  // data_send(get_mac() + "&0x31", getScalatedMeasure() + 0.01);
+  // delay(500);
+
+  data_send(get_mac() + "&0x68", get_temp_c());
+  delay(500);
 }
-// curl --location --request POST 'http://communication.enerinno.ca/external/devices/settings'
-// --header 'Content-Type: application/json'
-// --data-raw '{"device": "B8:D6:1A:0C:B3:18"}'
