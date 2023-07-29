@@ -13,7 +13,7 @@
 #include "water_flow.h"
 #include "tmp_102.h"
 #include "temp_max.h"
-#include "c4to20mA.h"
+#include "Current_4_20mA.h"
 
 int version;
 
@@ -315,6 +315,13 @@ void post_sensors_values() {
   // data_send(get_mac() + "&0x31", getScalatedMeasure() + 0.01);
   // delay(500);
 
-  data_send(get_mac() + "&0x68", get_temp_c());
+  // data_send(get_mac() + "&0x68", get_temp_c());
+  // delay(500);
+
+  // float current = getCurrent(); // Converted and scaled from 4-20mA
+
+  // Serial.print("current: ");
+  // Serial.print(current);
+  data_send(get_mac() + "&0x12", getCurrent()+0.01);
   delay(500);
 }

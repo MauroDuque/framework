@@ -8,7 +8,7 @@
 #include "water_flow.h"
 #include "tmp_102.h"
 #include "temp_max.h"
-#include "c4to20mA.h"
+#include "Current_4_20mA.h"
 
 void init_sensors(){
     // qwiic_setup();
@@ -17,8 +17,8 @@ void init_sensors(){
     // setup_water_flow();
     // humidity_setup();
     // setup_tmp();
-    setup_max();
-    // current_4_20MA_setup();
+    // setup_max();
+    current_4_20MA_setup();
 }
 
 void read_sensors() {
@@ -28,6 +28,6 @@ void read_sensors() {
     // humidity_loop();
     // loop_water_flow();
     // loop_tmp();
-    loop_max();
-    // current_4_20MA_loop();
+    // loop_max();
+    current_4_20MA_loop();
 }
