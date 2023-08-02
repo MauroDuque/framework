@@ -6,7 +6,7 @@
 #include "spiffile.h"
 #include "settings.h"
 #include "wifimanager.h"
-#include "thermocouple.h"
+#include "Enerinno_MCP9600.h"
 #include "ct.h"
 #include "humidity.h"
 #include "GAS.h"
@@ -194,7 +194,7 @@ void post_settings() {
   if (httpResponseCode > 0) {
     String response = http.getString();
     JSONVar myObject = JSON.parse(response);
-    check_version_update(myObject);
+    //check_version_update(myObject);
   } else {
     Serial.println("HTTP POST request failed");
   }
@@ -267,6 +267,8 @@ void data_send(String address, double value) {
 }
 
 void post_sensors_values() {
+
+  
   // data_send(get_mac() + "&0x60", getSensorTemperature(0));
   // delay(500);
   // data_send(get_mac() + "&0x61", getSensorTemperature(1));
@@ -283,9 +285,11 @@ void post_sensors_values() {
   // delay(500);
   // data_send(get_mac() + "&0x67", getSensorTemperature(7));
   // delay(500);
-  // data_send(get_mac() + "&0x80", get_pulse_gas());
+  // data_send(get_mac() + "&0x80", get_pulse_gas() + 0.01);
   // delay(500);
-  // data_send(get_mac() + "&0x81", get_counter_gas());
+  // data_send(get_mac() + "&0x81", get_counter_gas() + 0.01);
+  // delay(500);
+  // data_send(get_mac() + "&0x82", get_pulses_per_hour() + 0.1);
   // delay(500);
   // data_send(get_mac() + "&0x40", get_current_1() + 0.1);
   // delay(500);
@@ -315,13 +319,13 @@ void post_sensors_values() {
   // data_send(get_mac() + "&0x31", getScalatedMeasure() + 0.01);
   // delay(500);
 
-  // data_send(get_mac() + "&0x68", get_temp_c());
-  // delay(500);
+  data_send(get_mac() + "&0x68", get_temp_c() + 0.01);
+  delay(500);
 
   // float current = getCurrent(); // Converted and scaled from 4-20mA
 
   // Serial.print("current: ");
   // Serial.print(current);
-  data_send(get_mac() + "&0x12", getCurrent()+0.01);
-  delay(500);
+  // data_send(get_mac() + "&0x12", getCurrent()+0.01);
+  // delay(500);
 }

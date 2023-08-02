@@ -56,12 +56,10 @@ void loop() {
     check_wifi_connection();
   }
 
-  
-
   if(millis() >= TIME_PERIOD_CYCLE + PERIOD_CYCLE) {
     TIME_PERIOD_CYCLE += PERIOD_CYCLE;
-    read_sensors();
     if(is_internet() == true) {
+      read_sensors();
       Serial.println("Internet");
       Serial.println("Getting time....");
       get_time();

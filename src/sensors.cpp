@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "thermocouple.h"
+#include "Enerinno_MCP9600.h"
 #include "qwiic.h"
 #include "settings.h"
 #include "ct.h"
@@ -17,8 +17,8 @@ void init_sensors(){
     // setup_water_flow();
     // humidity_setup();
     // setup_tmp();
-    // setup_max();
-    current_4_20MA_setup();
+    setup_max();
+    // current_4_20MA_setup();
 }
 
 void read_sensors() {
@@ -28,6 +28,7 @@ void read_sensors() {
     // humidity_loop();
     // loop_water_flow();
     // loop_tmp();
-    // loop_max();
-    current_4_20MA_loop();
+    loop_max();
+    Serial.println(get_temp_c());
+    // current_4_20MA_loop();
 }

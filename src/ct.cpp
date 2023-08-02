@@ -60,7 +60,7 @@ void loop_ct() {
 
   total_power = calculate_total_power(current_1);
 
-  // Serial.print("Current CT1: " + String(current_1) + " A || Current CT2: " + String(current_2) + " A");
-  // Serial.print(" || Power CT1: " + String(power_1_phase) + " W || Power CT2: " + String(power_2_phase) + " W");
-  // Serial.println(" || Total Power: " + String(total_power) + " W");
+  Serial.print("Current CT1: " + String(current_1) + " A || Current CT2: " + String(current_2) + " A");
+  Serial.print(" || Power CT1: " + String(power_1_phase) + " W || Power CT2: " + String(power_2_phase) + " W");
+  Serial.println(" || Total Power: " + String(total_power) + " W");
 }
