@@ -7,11 +7,9 @@
 #include "server.h"
 #include "sensors.h"
 
-
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
-
 #include <ElegantOTA.h>
 
 WebServer server_ota(85);

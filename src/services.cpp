@@ -14,6 +14,8 @@
 #include "tmp_102.h"
 #include "temp_max.h"
 #include "Current_4_20mA.h"
+#include "battery.h"
+#include "strengthRSSI.h"
 
 int version;
 
@@ -328,4 +330,10 @@ void post_sensors_values() {
   // Serial.print(current);
   // data_send(get_mac() + "&0x12", getCurrent()+0.01);
   // delay(500);
+  // Battery
+  data_send(get_mac() + "&0x100", get_battery_percentage());
+  delay(500);
+
+  data_send(get_mac() + "&0x110", get_rssi_strength_bars());
+  delay(500);
 }

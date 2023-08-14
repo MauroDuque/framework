@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "Enerinno_MCP9600.h"
-#include "qwiic.h"
 #include "settings.h"
 #include "ct.h"
 #include "humidity.h"
@@ -9,6 +8,8 @@
 #include "tmp_102.h"
 #include "temp_max.h"
 #include "Current_4_20mA.h"
+#include "battery.h"
+#include "strengthRSSI.h"
 
 void init_sensors(){
     // qwiic_setup();
@@ -19,6 +20,7 @@ void init_sensors(){
     // setup_tmp();
     setup_max();
     // current_4_20MA_setup();
+    battery_setup();
 }
 
 void read_sensors() {
@@ -31,4 +33,6 @@ void read_sensors() {
     loop_max();
     Serial.println(get_temp_c());
     // current_4_20MA_loop();
+    battery_loop();
+    rssi_loop();
 }
