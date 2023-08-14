@@ -9,16 +9,46 @@
 
 #include <WiFi.h>
 #include <WiFiClient.h>
-#include <WebServer.h>
-#include <ElegantOTA.h>
 
-WebServer server_ota(85);
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
-int PERIOD_CHECK_CONNECTION  = 1 * 60 * 1000;
-unsigned long TIME_PERIOD_CHECK_CONNECTION = 0;
+#include "ota_setup.h"
 
-int PERIOD_CYCLE  = 0.3 * 60 * 1000;
-unsigned long TIME_PERIOD_CYCLE = 0;
+TaskHandle_t wifiTaskHandle = NULL;
+TaskHandle_t mainTaskHandle = NULL;
+
+// Function to connect to WiFi network
+void connectToWiFi(void* parameter) {
+  Serial.println("Connecting to WiFi...");
+  wifi_connection(get_SSID().c_str(), get_password().c_str());
+  
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay 1 second
+  }
+  
+  Serial.println("\nConnected to WiFi");
+  vTaskDelete(NULL); // Delete the task
+}
+
+void mainTask(void* parameter){
+  while(is_internet() == true) {
+    Serial.println("Internet");
+    Serial.println("Getting time....");
+    get_time();
+    delay(500);
+    Serial.println("Posting data sensors....");
+    post_sensors_values();
+    delay(500);
+    Serial.println("Posting settings....");
+    post_settings();
+    post_log();
+
+    vTaskDelay(5000 / portTICK_PERIOD_MS); // Delay 1 second
+  }
+  vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay 1 second
+}
 
 void setup() {
   Serial.begin(115200);
@@ -27,7 +57,18 @@ void setup() {
   delay(1000);
   set_settings();
   delay(1000);
-  wifi_setup();
+  
+  // Create the WiFi task
+  xTaskCreate(
+    connectToWiFi,          // Function to run
+    "WiFiTask",             // Name of the task
+    4096,                   // Stack size (adjust as needed)
+    NULL,                   // Task parameters
+    1,                      // Task priority
+    &wifiTaskHandle         // Task handle
+  );
+
+  // --------------------------------------
   delay(1000);
   get_configuration_server();
   delay(1000);
@@ -38,38 +79,13 @@ void setup() {
   init_sensors();
   delay(1000);
 
-  server_ota.on("/", []() {
-    server_ota.send(200, "text/plain", "Hi! I am ESP8266.");
-  });
+  ota_setup();
 
-  ElegantOTA.begin(&server_ota);    // Start ElegantOTA
-  server_ota.begin();
-  Serial.println("HTTP server started");
+  xTaskCreate(mainTask, "MainTask", 4096, NULL, 1, &mainTaskHandle);
+  // Start FreeRTOS scheduler
+  vTaskStartScheduler();
 }
 
 void loop() {
-  server_ota.handleClient();
-  if(millis() >= TIME_PERIOD_CHECK_CONNECTION + PERIOD_CHECK_CONNECTION) {
-    TIME_PERIOD_CHECK_CONNECTION += PERIOD_CHECK_CONNECTION;
-    check_wifi_connection();
-  }
-
-  if(millis() >= TIME_PERIOD_CYCLE + PERIOD_CYCLE) {
-    TIME_PERIOD_CYCLE += PERIOD_CYCLE;
-    if(is_internet() == true) {
-      read_sensors();
-      Serial.println("Internet");
-      Serial.println("Getting time....");
-      get_time();
-      delay(500);
-      Serial.println("Posting data sensors....");
-      post_sensors_values();
-      delay(500);
-      Serial.println("Posting settings....");
-      post_settings();
-      post_log();
-    } else {
-      Serial.println("No internet");
-    }
-  }
+  ota_loop();
 }
