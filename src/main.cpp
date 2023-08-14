@@ -1,77 +1,50 @@
 #include <Arduino.h>
-#include "SPIFFS.h"
-#include "wifimanager.h"
-#include "services.h"
-#include "spiffile.h"
-#include "settings.h"
-#include "server.h"
-#include "sensors.h"
+#include "WiFi.h"
+#include <ESPAsyncWebServer.h>
 
+// Replace with your network credentials
+const char* ssid = "COGECO-BE210";
+const char* password = "68F96COGECO";
 
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <WebServer.h>
+// Create AsyncWebServer object on port 80
+AsyncWebServer server(80);
 
-#include <ElegantOTA.h>
-
-WebServer server_ota(85);
-
-int PERIOD_CHECK_CONNECTION  = 1 * 60 * 1000;
-unsigned long TIME_PERIOD_CHECK_CONNECTION = 0;
-
-int PERIOD_CYCLE  = 0.3 * 60 * 1000;
-unsigned long TIME_PERIOD_CYCLE = 0;
+const char* htmlPage = 
+  "<html>"
+  "<body>"
+  "<form action='/save' method='POST'>"
+  "SSID: <input type='text' name='ssid'><br>"
+  "Password: <input type='password' name='password'><br>"
+  "<input type='submit' value='Save'>"
+  "</form>"
+  "</body>"
+  "</html>";
 
 void setup() {
   Serial.begin(115200);
+  Serial.println("Setting AP (Access Point & Station)");
+  WiFi.mode(WIFI_AP_STA);
+   // Connect to Wi-Fi
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi..");
+  }
 
-  init_spiff();
-  delay(1000);
-  set_settings();
-  delay(1000);
-  wifi_setup();
-  delay(1000);
-  get_configuration_server();
-  delay(1000);
-  init_server();
-  delay(1000);
-  set_logs();
-  delay(1000);
-  init_sensors();
-  delay(1000);
-
-  server_ota.on("/", []() {
-    server_ota.send(200, "text/plain", "Hi! I am ESP8266.");
+  // Print ESP Local IP Address
+  Serial.print("Local IP: ");
+  Serial.println(WiFi.localIP());
+  
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/html", htmlPage);
   });
-
-  ElegantOTA.begin(&server_ota);    // Start ElegantOTA
-  server_ota.begin();
-  Serial.println("HTTP server started");
+  // Start server
+  server.begin();
 }
 
 void loop() {
-  server_ota.handleClient();
-  if(millis() >= TIME_PERIOD_CHECK_CONNECTION + PERIOD_CHECK_CONNECTION) {
-    TIME_PERIOD_CHECK_CONNECTION += PERIOD_CHECK_CONNECTION;
-    check_wifi_connection();
+  if(WiFi.status() == WL_CONNECTED) {
+    Serial.println("connected");
   }
-
-  if(millis() >= TIME_PERIOD_CYCLE + PERIOD_CYCLE) {
-    TIME_PERIOD_CYCLE += PERIOD_CYCLE;
-    if(is_internet() == true) {
-      read_sensors();
-      Serial.println("Internet");
-      Serial.println("Getting time....");
-      get_time();
-      delay(500);
-      Serial.println("Posting data sensors....");
-      post_sensors_values();
-      delay(500);
-      Serial.println("Posting settings....");
-      post_settings();
-      post_log();
-    } else {
-      Serial.println("No internet");
-    }
-  }
+  delay(500);
 }
