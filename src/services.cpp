@@ -7,6 +7,8 @@
 #include "settings.h"
 #include "wifimanager.h"
 #include "battery.h"
+#include "temp_max.h"
+#include "ct.h"
 
 int version;
 
@@ -306,13 +308,13 @@ void post_sensors_values() {
   // delay(500);
 
   
-  // data_send(get_mac() + "&0x30", getCurrent() + 0.01);
-  // delay(500);
+  data_send(get_mac_address() + "&0x30", get_current_1() + 0.01);
+  delay(500);
 
   // data_send(get_mac() + "&0x31", getScalatedMeasure() + 0.01);
   // delay(500);
 
-  // data_send(get_mac() + "&0x68", get_temp_c() + 0.01);
+  // data_send(get_mac_address() + "&0x68", get_temp_c() + 0.01);
   // delay(500);
 
   // float current = getCurrent(); // Converted and scaled from 4-20mA
@@ -322,8 +324,8 @@ void post_sensors_values() {
   // data_send(get_mac() + "&0x12", getCurrent()+0.01);
   // delay(500);
   // Battery
-  data_send(get_mac_address() + "&0x100", get_battery_percentage());
-  delay(500);
+  // data_send(get_mac_address() + "&0x100", get_battery_percentage());
+  // delay(500);
 
   data_send(get_mac_address() + "&0x110", get_rssi_strength_bars());
   delay(500);
