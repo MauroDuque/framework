@@ -15,6 +15,7 @@
 #include <freertos/task.h>
 
 #include "ota_setup.h"
+#include "ct.h"
 
 TaskHandle_t wifiTaskHandle = NULL;
 // TaskHandle_t mainTaskHandle = NULL;
@@ -111,5 +112,8 @@ void loop() {
       Serial.println("No internet");
     }
   }
-  loop_ct();
+
+  Serial.print("Strength");
+  Serial.println(get_rssi_strength_bars());
+  delay(500);
 }
