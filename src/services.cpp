@@ -324,9 +324,9 @@ void post_sensors_values() {
   // data_send(get_mac() + "&0x12", getCurrent()+0.01);
   // delay(500);
   // Battery
-  // data_send(get_mac_address() + "&0x100", get_battery_percentage());
-  // delay(500);
+  data_send(get_mac_address() + "&0x100", get_battery_percentage() + 0.001);
+  delay(500);
 
-  data_send(get_mac_address() + "&0x110", get_rssi_strength_bars());
+  data_send(get_mac_address() + "&0x110", get_rssi_strength_bars() + 0.001);
   delay(500);
 }

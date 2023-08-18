@@ -20,7 +20,7 @@
 TaskHandle_t wifiTaskHandle = NULL;
 // TaskHandle_t mainTaskHandle = NULL;
 
-int PERIOD_CYCLE  = 5 * 60 * 1000;
+int PERIOD_CYCLE  = 0.2 * 60 * 1000;
 unsigned long TIME_PERIOD_CYCLE = 0;
 
 // Function to connect to WiFi network
@@ -89,6 +89,8 @@ void setup() {
   // xTaskCreate(mainTask, "MainTask", 4096, NULL, 1, &mainTaskHandle);
   // Start FreeRTOS scheduler
   // vTaskStartScheduler();
+  Serial.print("MAC: ");
+  Serial.println(get_mac_address());
 }
 
 void loop() {
@@ -112,8 +114,4 @@ void loop() {
       Serial.println("No internet");
     }
   }
-
-  Serial.print("Strength");
-  Serial.println(get_rssi_strength_bars());
-  delay(500);
 }
