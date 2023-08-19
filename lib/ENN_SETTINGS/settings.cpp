@@ -50,13 +50,13 @@ char* get_ssid_local_set() {
 }
 
 String get_SSID() {
-    String ssid = read_file(SPIFFS, ssidPath);
-    return ssid;
+  String ssid = read_file(SPIFFS, ssidPath);
+  return ssid;
 }
 
 String get_password(){
-    String pass = read_file(SPIFFS, passPath);
-    return pass;
+  String pass = read_file(SPIFFS, passPath);
+  return pass;
 }
 
 String get_firmware_url() {
@@ -129,6 +129,25 @@ void get_configuration_server(){
 
 void set_settings() {
   EEPROM.begin(EEPROM_SIZE); // Initialize EEPROM
+
+  // File configFile = SPIFFS.open("/config.json", "r");
+  // if (!configFile) {
+  //   Serial.println("Failed to open config file");
+  //   return;
+  // }
+
+  // size_t size = configFile.size();
+  // std::unique_ptr<char[]> buf(new char[size]);
+  // configFile.readBytes(buf.get(), size);
+
+  // DynamicJsonDocument jsonDoc(1024); // Adjust the buffer size as needed
+  // deserializeJson(jsonDoc, buf.get());
+
+  // const char* wifi_ssid = jsonDoc["wifi"]["ssid"];
+  // const char* wifi_password = jsonDoc["wifi"]["password"];
+
+  // Serial.printf("WiFi SSID: %s\n", wifi_ssid);
+  // Serial.printf("WiFi Password: %s\n", wifi_password);
 
   settings["device"] = get_mac_address();
   settings["softwareVersion"] = get_firmware_version();

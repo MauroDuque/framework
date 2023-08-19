@@ -308,9 +308,15 @@ void post_sensors_values() {
   // delay(500);
 
   
-  data_send(get_mac_address() + "&0x30", get_current_1() + 0.01);
-  delay(500);
+  // data_send(get_mac_address() + "&0x30", get_current_1() + 0.01);
+  // delay(500);
 
+// -----------------------------------------------------------------------
+  // Temporary
+  data_send(get_mac_address() + "&0x30", get_voltage_battery() + 0.01);
+  delay(500);
+  
+// -----------------------------------------------------------------------
   // data_send(get_mac() + "&0x31", getScalatedMeasure() + 0.01);
   // delay(500);
 
