@@ -14,6 +14,8 @@ bool set_up_master = false;
 
 #define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
 
+
+
 void print_wakeup_reason(){
   esp_sleep_wakeup_cause_t wakeup_reason;
 
@@ -35,26 +37,15 @@ void saving_data() {
   double temp = get_temp_c();
   Serial.println(temp);
 
-  // addDataEntry(get_mac_address() + "&0x60", temp, get_time_from_server());
-  
-
-  // if(WiFi.status() != WL_CONNECTED) {
-  //   Serial.println("Conecting...");
-  // } else {
-  //   Serial.println("Conected");
-  //   // post_sensor(get_mac_address() + "&0x60", temp, getInternalTime());
-  //   addDataEntry(get_mac_address() + "&0x60", temp, getInternalTime());
-  // }
+  pushLogEntry(get_mac_address() + "&0x60",get_time_from_server(), temp);
+  printLogEntries();
 }
 
 void handle_sleepy_mode() {
   esp_sleep_enable_timer_wakeup(getSamplingTime() * uS_TO_S_FACTOR);
   Serial.println("Setup ESP32 to sleep for every " + String(getSamplingTime()) + " Seconds");
 
-  while(WiFi.status() != WL_CONNECTED){
-    Serial.println("Connecting..");
-    delay(100);
-  }
+  saving_data();
 
   Serial.println("Going to sleep now");
   delay(1000);
@@ -74,14 +65,16 @@ void master_routine() {
     delay(5000);
     Serial.println("First loop for setup master mode");
     
-    wifi_connection(getWifiSSID().c_str(), getWifiPassword().c_str());
+    // wifi_connection(getWifiSSID().c_str(), getWifiPassword().c_str());
 
     pinMode(enable_max, OUTPUT);
     set_up_master = true;
 
-    // if(getIsSleepyMode()) {
-    //   handle_sleepy_mode();
-    // }
+    save_data_setup(); // Check
+
+    if(getIsSleepyMode()) {
+      handle_sleepy_mode();
+    }
   }
   
   // TODO MASTER
