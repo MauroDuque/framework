@@ -100,7 +100,8 @@ void print_mode_menu(){
   clear_screen();
   Serial.println("1. MASTER");
   Serial.println("2. SLAVE");
-  Serial.println("3. MENU");
+  Serial.println("3. CONTROLLER");
+  Serial.println("4. MENU");
   Serial.println("q. Quit");
 }
 
@@ -229,11 +230,6 @@ void wifi_handler(char wifi_choice, String* ssids) {
 void mode_handler(char mode_choice) {
   if(mode_choice == '1') {
     setMode("MASTER");
-    sampling_menu();
-    
-    while (!Serial.available());
-    int sampling_choice = Serial.parseInt();
-    sampling_handler(sampling_choice);
   }
 
   if(mode_choice == '2') {
@@ -241,6 +237,17 @@ void mode_handler(char mode_choice) {
   }
 
   if(mode_choice == '3') {
+    setMode("CONTROLLER");
+  }
+
+  if(mode_choice == '1' || mode_choice == '2' || mode_choice == '3') {
+    sampling_menu();
+    while (!Serial.available());
+    int sampling_choice = Serial.parseInt();
+    sampling_handler(sampling_choice);
+  }
+
+  if(mode_choice == '4') {
     setMode("MENU");
   }
 }

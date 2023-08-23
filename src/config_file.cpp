@@ -104,7 +104,7 @@ void safe_config_file() {
 // ========================== Set ==========================
 void init_preference() {
     preferences.begin("settings", false);
-    // preferences.putString("mode", "MENU");
+    preferences.putString("mode", "MENU");
     // preferences.putInt("sampling_time", 60 * 5); // Set defaul 5 min
     // preferences.end();
 }

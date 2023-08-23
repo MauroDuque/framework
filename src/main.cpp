@@ -3,12 +3,16 @@
 #include "config_file.h"
 #include "wifimanager.h"
 #include "temp_max.h"
+#include "services.h"
+
 
 
 int PERIOD_CYCLE  = 1000;
 unsigned long TIME_PERIOD_CYCLE = 0;
 
 int enable_max = 10;
+bool set_up_master = false;
+
 
 void slave_routine()  {
   Serial.println("Slave Mode");
@@ -16,27 +20,45 @@ void slave_routine()  {
 
 void master_routine() {
   //  -- server --
+
+  if(!set_up_master) {
+    delay(5000);
+    Serial.println("First loop for setup master mode");
+    wifi_connection(getWifiSSID().c_str(), getWifiPassword().c_str());
+
+    pinMode(enable_max, OUTPUT);
+
+    set_up_master = true;
+  }
+
+  // if(millis() >= TIME_PERIOD_CYCLE + PERIOD_CYCLE) {
+  //   TIME_PERIOD_CYCLE += PERIOD_CYCLE;
+    
+
+  // }
+  
   // TODO MASTER
   if(millis() >= TIME_PERIOD_CYCLE + (PERIOD_CYCLE * getSamplingTime())) {
     TIME_PERIOD_CYCLE += (PERIOD_CYCLE * getSamplingTime());
+    
     digitalWrite(enable_max, HIGH);
     Serial.println("Master Temp[C]: ");
-    Serial.println(get_temp_c());
+    double temp = get_temp_c();
+    Serial.println(temp);
+
+    if(WiFi.status() != WL_CONNECTED) {
+      Serial.println("Conecting...");
+    } else {
+      Serial.println("Conected");
+      post_sensor(get_mac_address() + "&0x60", temp, get_time_from_server());
+    }
   }
 }
 
 void setup() {
   Serial.begin(115200);
-  pinMode(enable_max, OUTPUT);
 
   config_file();
-
-  
-  // -- Read Config file --
-  // Serial.println("Config..");
-  // config_file();
-  // Create storage file
-  // Create time file
 }
 
 void loop() {
@@ -51,7 +73,6 @@ void loop() {
   
     String* ssids = get_network_ssids();
     menu(ssids);
-
   } 
   else if (strcmp(mode.c_str(), "MASTER") == 0) {
     // -- OTA --
