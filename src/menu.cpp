@@ -230,6 +230,19 @@ void wifi_handler(char wifi_choice, String* ssids) {
 void mode_handler(char mode_choice) {
   if(mode_choice == '1') {
     setMode("MASTER");
+    Serial.println("");
+    Serial.println("Is it Seelpy mode? [y/n]");
+    while (!Serial.available());
+    char answer = Serial.read();
+
+    Serial.print("Your answer is: ");
+    Serial.print(answer);
+    if(answer == 'y') {
+      setIsSleepyMode(true);
+      Serial.println("Saved!");
+    } else {
+      Serial.println("No Saved");
+    }
   }
 
   if(mode_choice == '2') {
