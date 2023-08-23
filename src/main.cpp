@@ -5,10 +5,6 @@
 #include "temp_max.h"
 #include "services.h"
 #include "save_data.h"
-#include <RTClib.h> // Include the RTC library
-
-RTC_DS3231 rtc; // Create an instance of the RTC object
-
 
 int PERIOD_CYCLE  = 1000;
 unsigned long TIME_PERIOD_CYCLE = 0;
@@ -39,7 +35,7 @@ void saving_data() {
   double temp = get_temp_c();
   Serial.println(temp);
 
-  addDataEntry(get_mac_address() + "&0x60", temp, get_time_from_server());
+  // addDataEntry(get_mac_address() + "&0x60", temp, get_time_from_server());
   
 
   // if(WiFi.status() != WL_CONNECTED) {
@@ -56,10 +52,9 @@ void handle_sleepy_mode() {
   Serial.println("Setup ESP32 to sleep for every " + String(getSamplingTime()) + " Seconds");
 
   while(WiFi.status() != WL_CONNECTED){
-    Serial.print("Connecting..");
+    Serial.println("Connecting..");
+    delay(100);
   }
-  saving_data();
-  printDataEntries();
 
   Serial.println("Going to sleep now");
   delay(1000);
@@ -84,9 +79,9 @@ void master_routine() {
     pinMode(enable_max, OUTPUT);
     set_up_master = true;
 
-    if(getIsSleepyMode()) {
-      handle_sleepy_mode();
-    }
+    // if(getIsSleepyMode()) {
+    //   handle_sleepy_mode();
+    // }
   }
   
   // TODO MASTER
@@ -101,7 +96,6 @@ void setup() {
   Serial.begin(115200);
   print_wakeup_reason();
   config_file();
-  save_date_setup();
 }
 
 void loop() {
