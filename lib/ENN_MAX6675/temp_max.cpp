@@ -11,9 +11,9 @@
 // const int MAX6675_SO_PIN = 19; // data out
 // const int MAX6675_SCK_PIN = 5; // clock
 
-const int MAX6675_CS_PIN = 18; // chip select
-const int MAX6675_SO_PIN = 19; // data out
-const int MAX6675_SCK_PIN = 5; // clock
+// const int MAX6675_CS_PIN = 18; // chip select
+// const int MAX6675_SO_PIN = 19; // data out
+// const int MAX6675_SCK_PIN = 5; // clock
 
 // const int MAX6675_CS_PIN = 34; // chip select
 // const int MAX6675_SO_PIN = 37; // data out
@@ -22,6 +22,12 @@ const int MAX6675_SCK_PIN = 5; // clock
 // const int MAX6675_CS_PIN = 37; // chip select
 // const int MAX6675_SO_PIN = 35; // data out
 // const int MAX6675_SCK_PIN = 36; // clock
+
+// Firebeetle
+const int MAX6675_CS_PIN = 23; // chip select
+const int MAX6675_SO_PIN = 19; // data out
+const int MAX6675_SCK_PIN = 18; // clock
+
 MAX6675 thermocouple(MAX6675_SCK_PIN, MAX6675_CS_PIN, MAX6675_SO_PIN);
 
 float get_temp_c() {

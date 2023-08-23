@@ -1,0 +1,11 @@
+{
+    "wifi": {
+        "ssid": "YourWiFiSSID",
+        "password": "YourWiFiPassword"
+    },
+    "config": {
+        "config_mode": true,
+        "mode": "MENU",
+        "is_sleepy": false
+    }
+}
