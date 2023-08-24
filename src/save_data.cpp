@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SPIFFS.h>
 
-const int MAX_ROWS = 10;
+const int MAX_ROWS = 500;
 
 struct LogEntry {
   char sensor[20];
@@ -11,6 +11,14 @@ struct LogEntry {
 
 int logSize = 0;
 
+void clearLogEntries() {
+  if (SPIFFS.remove("/log.txt") && SPIFFS.remove("/log_size.txt")) {
+    logSize = 0;
+    Serial.println("Log entries cleared.");
+  } else {
+    Serial.println("Error clearing log entries.");
+  }
+}
 
 void printLogEntries() {
   Serial.println("Log Entries:");
@@ -56,6 +64,8 @@ void loadLogSize() {
 void pushLogEntry(String sensor, double time, double value) {
   if (logSize >= MAX_ROWS) {
     Serial.println("Log is full. Cannot push more entries.");
+    Serial.println("Flushing.");
+    clearLogEntries();
     return;
   }
 

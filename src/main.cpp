@@ -33,9 +33,17 @@ void print_wakeup_reason(){
 
 void saving_data() {
   digitalWrite(enable_max, HIGH);
+
+  pinMode(enable_max, OUTPUT);
+  digitalWrite(enable_max, HIGH);
+
+  delay(500);
+
   Serial.println("Master Temp[C]: ");
   double temp = get_temp_c();
   Serial.println(temp);
+
+  delay(500);
 
   pushLogEntry(get_mac_address() + "&0x60",get_time_from_server(), temp);
   printLogEntries();
